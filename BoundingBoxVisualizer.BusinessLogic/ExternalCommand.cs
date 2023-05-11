@@ -2,12 +2,13 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using BoundingBoxVisualizer.BusinessLogic.Logic;
 using System;
 
 namespace BoundingBoxVisualizer.BusinessLogic
 {
     [Transaction(TransactionMode.Manual)]
-    internal class Run : IExternalCommand
+    internal class ExternalCommand : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -19,6 +20,12 @@ namespace BoundingBoxVisualizer.BusinessLogic
             {
                 return Result.Failed;
             }
+
+            GeometryElement geometry = element.get_Geometry(new Options());
+
+            new DrawingUtility().Setup(geometry);
+
+            uiDocument.UpdateAllOpenViews();
 
             return Result.Succeeded;
         }

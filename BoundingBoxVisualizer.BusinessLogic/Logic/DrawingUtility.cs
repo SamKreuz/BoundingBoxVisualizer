@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExternalService;
 using BoundingBoxVisualizer.BusinessLogic.Logic.Model;
+using System;
 using System.Collections.Generic;
 
 namespace BoundingBoxVisualizer.BusinessLogic.Logic
@@ -13,34 +14,15 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
             ExternalService service = ExternalServiceRegistry.GetService(serviceId);
 
             var painter = new Painter(geometryElement);
-
             service.AddServer(painter);
+
+
+            // TODO SK: Check if needed. Probably only for multiple servers;
+            MultiServerService msDirectContext3DService = service as MultiServerService;
+            IList<Guid> serverIds = msDirectContext3DService.GetActiveServerIds();
+            serverIds.Add(painter.GetServerId());
+            msDirectContext3DService.SetActiveServers(serverIds);
         }
-
-        //public void CreateGeometry(BoundingBoxXYZ boundingBox)
-        //{
-        //    XYZ min = boundingBox.Min;
-        //    XYZ max = boundingBox.Max;
-
-        //    var dist = max - min;
-
-        //    var middle = min + dist;
-
-        //    Mesh me = new Mesh(middle);
-
-        //    GeometryCreationUtilities.
-
-        //}
-
-        //public void CreateSphere(XYZ center)
-        //{
-        //    Frame frame = new Frame(center, XYZ.BasisX, XYZ.BasisY, XYZ.BasisZ);
-
-        //    Arc arc
-
-        //}
-
-
 
         private Solid CreateExtrudedGeometry(CurveLoop loop)
         {

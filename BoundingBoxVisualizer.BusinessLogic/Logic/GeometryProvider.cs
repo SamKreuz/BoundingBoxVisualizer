@@ -1,34 +1,36 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.DirectContext3D;
+using BoundingBoxVisualizer.BusinessLogic.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
 {
     internal class GeometryProvider
     {
         private GeometryData geometry;
+        private List<int> numVerticesInMeshesBefore = new List<int> { 0 };
 
         public GeometryProvider(GeometryElement geometryElement)
         {
-            int floatSize = VertexPosition.GetSizeInFloats();
+            int bufferSize = VertexPosition.GetSizeInFloats();
             List<Mesh> meshes = GetMeshes(geometryElement);
             List<VertexPosition> vertices = GetVertexPositions(meshes);
-
+            
             geometry = new GeometryData();
 
             geometry.Meshes = meshes;
-
+            geometry.Start = 0;
+            geometry.PrimitiveType = PrimitiveType.TriangleList;
             geometry.VertexFormatBits = VertexFormatBits.Position;
             geometry.VertexFormat = new VertexFormat(geometry.VertexFormatBits);
             geometry.EffectInstance = new EffectInstance(geometry.VertexFormatBits);
-
             geometry.PrimitiveCount = CountTriangles(meshes);
             geometry.VertexCount = CountVertices(meshes);
             geometry.IndexCount = CountIndices(meshes, geometry.PrimitiveCount);
-
-            geometry.IndexBuffer = CreateIndexBuffer();
-            geometry.VertexBuffer = CreateVertexBuffer();
+            geometry.VertexBuffer = CreateVertexBuffer(bufferSize, meshes);
+            geometry.IndexBuffer = CreateIndexBuffer(geometry.PrimitiveCount, meshes);
         }
 
         public GeometryData GetData()
@@ -126,26 +128,57 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
             return indexBufferSize;
         }
 
-        private IndexBuffer CreateIndexBuffer()
+        private IndexBuffer CreateIndexBuffer(int primitiveCount, List<Mesh> meshes)
         {
+            int meshNumber = 0;
+            int bufferSize = primitiveCount * IndexTriangle.GetSizeInShortInts();
 
+            var buffer = new IndexBuffer(bufferSize);
+
+            buffer.Map(bufferSize);
+
+            IndexStreamTriangle stream = buffer.GetIndexStreamTriangle();
+            
+            foreach(Mesh mesh in meshes)
+            {
+                int startIndex = numVerticesInMeshesBefore[meshNumber];  // TODO SK: Apply as foreach loop?
+                for (int i = 0; i < mesh.Vertices.Count; i++)
+                {
+                    MeshTriangle mt = mesh.get_Triangle(i);
+
+                    stream.AddTriangle(new IndexTriangle(
+                                                startIndex + (int)mt.get_Index(0),
+                                                startIndex + (int)mt.get_Index(1),
+                                                startIndex + (int)mt.get_Index(2)));
+                }
+                meshNumber++;
+            }
+            buffer.Unmap();
+
+            return buffer;
         }
 
-        private VertexBuffer CreateVertexBuffer(int bufferSize, List<VertexPosition> vertices)
+        private VertexBuffer CreateVertexBuffer(int bufferSize, List<Mesh> meshes)
         {
             var buffer = new VertexBuffer(bufferSize);
 
             buffer.Map(bufferSize);
 
-            try
+            foreach(Mesh mesh in meshes)
             {
-                VertexStreamPosition vertexStream = buffer.GetVertexStreamPosition();
-                vertexStream.AddVertices(vertices);
+                try
+                {
+                    VertexStreamPosition vertexStream = buffer.GetVertexStreamPosition();
+                    vertexStream.AddVertices(mesh.VertexPositions());
+                }
+                catch (Exception ex)
+                {
+                    // TODO SK
+                }
+
+                numVerticesInMeshesBefore.Add(numVerticesInMeshesBefore.Last() + mesh.Vertices.Count);
             }
-            catch(Exception ex)
-            {
-                // TODO SK
-            }
+
 
             buffer.Unmap();
 

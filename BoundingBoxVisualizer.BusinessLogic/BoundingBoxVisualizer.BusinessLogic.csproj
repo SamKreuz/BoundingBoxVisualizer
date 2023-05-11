@@ -49,13 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Extensions\MeshExtensions.cs" />
     <Compile Include="Logic\DrawingUtility.cs" />
     <Compile Include="Logic\Model\GeometryData.cs" />
     <Compile Include="Logic\GeometryProvider.cs" />
     <Compile Include="Logic\Model\Painter.cs" />
-    <Compile Include="Logic\PainterHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Run.cs" />
+    <Compile Include="ExternalCommand.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
