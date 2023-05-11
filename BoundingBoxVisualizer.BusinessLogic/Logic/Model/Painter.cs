@@ -9,9 +9,9 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 {
     internal class Painter : IDirectContext3DServer
     {
-        public Painter()
+        public Painter(GeometryElement geometryElement)
         {
-            GeometryProvider = new GeometryProvider();
+            GeometryProvider = new GeometryProvider(geometryElement);
             guid = Guid.NewGuid();
         }
 

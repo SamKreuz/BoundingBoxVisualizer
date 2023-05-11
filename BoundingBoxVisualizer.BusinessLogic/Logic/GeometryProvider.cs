@@ -9,29 +9,26 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
     {
         private GeometryData geometry;
 
-        public GeometryProvider()
+        public GeometryProvider(GeometryElement geometryElement)
         {
+            int floatSize = VertexPosition.GetSizeInFloats();
+            List<Mesh> meshes = GetMeshes(geometryElement);
+            List<VertexPosition> vertices = GetVertexPositions(meshes);
+
             geometry = new GeometryData();
 
-            //TODO SK: SetUp Geometry
+            geometry.Meshes = meshes;
 
+            geometry.VertexFormatBits = VertexFormatBits.Position;
+            geometry.VertexFormat = new VertexFormat(geometry.VertexFormatBits);
+            geometry.EffectInstance = new EffectInstance(geometry.VertexFormatBits);
 
-            //Meshes = meshes;
+            geometry.PrimitiveCount = CountTriangles(meshes);
+            geometry.VertexCount = CountVertices(meshes);
+            geometry.IndexCount = CountIndices(meshes, geometry.PrimitiveCount);
 
-            //PrimitiveType = PrimitiveType.TriangleList;
-            //vertexFormatBits = VertexFormatBits.Position;
-
-            //VertexFormat = new VertexFormat(vertexFormatBits);
-            //EffectInstance = new EffectInstance(vertexFormatBits);
-
-            //List<VertexPositionColored> vertices = new List<VertexPositionColored>();
-
-            //foreach(Mesh mesh in meshes)
-            //{
-            //    vertices.Add(new VertexPositionColored())
-            //}
-
-            //SetUpVertexStream
+            geometry.IndexBuffer = CreateIndexBuffer();
+            geometry.VertexBuffer = CreateVertexBuffer();
         }
 
         public GeometryData GetData()
@@ -49,27 +46,110 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
             return outline;
         }
 
-        private ColorWithTransparency color = new ColorWithTransparency(255, 0, 0, 0);
+        private List<Mesh> GetMeshes(GeometryElement geometryElement)
+        {
+            List<Mesh> meshes = new List<Mesh>();
+            List<Solid> solids = new List<Solid>();
 
-        public void ProcessFace()
+            foreach(GeometryObject geomObject in geometry.Meshes)
+            {
+                if(geomObject is Solid)
+                {
+                    var solid = (Solid)geomObject;
+
+                    if(solid.Volume > 0)
+                    {
+                        solids.Add(solid);
+                    }
+                }
+            }
+
+            if(solids.Count > 0)
+            {
+                foreach(var solid in solids)
+                {
+                    foreach(Face face in solid.Faces)
+                    {
+                        Mesh mesh = face.Triangulate();
+
+                        meshes.Add(mesh);
+                    }
+                }
+            }
+
+            return meshes;
+        }
+
+        private List<VertexPosition> GetVertexPositions(List<Mesh> meshes)
+        {
+            List<VertexPosition> vertices = new List<VertexPosition>();
+           
+            foreach(Mesh mesh in meshes)
+            {
+                foreach(var vertex in mesh.Vertices)
+                {
+                    vertices.Add(new VertexPosition(vertex));
+                }
+            }
+
+            return vertices;
+        }
+
+        private int CountTriangles(List<Mesh> meshes) 
+        {
+            int numberOfTriangles = 0;
+
+            foreach(Mesh mesh in meshes)
+            {
+                numberOfTriangles += mesh.NumTriangles;
+            }
+
+            return numberOfTriangles;
+        }
+
+        private int CountVertices(List<Mesh> meshes)
+        {
+            int numberOfVertices = 0;
+
+            foreach (Mesh mesh in meshes)
+            {
+                numberOfVertices += mesh.Vertices.Count;
+            }
+
+            return numberOfVertices;
+        }
+
+        private int CountIndices(List<Mesh> meshes, int primitiveCount)
+        {
+            int indexBufferSize = primitiveCount * IndexTriangle.GetSizeInShortInts();
+
+            return indexBufferSize;
+        }
+
+        private IndexBuffer CreateIndexBuffer()
         {
 
         }
 
-        public VertexStreamPositionColored SetUpVertexStream(List<VertexPositionColored> vertexList)
+        private VertexBuffer CreateVertexBuffer(int bufferSize, List<VertexPosition> vertices)
         {
-            VertexStreamPositionColored stream = VertexBuffer.GetVertexStreamPositionColored();
-            
-             try
+            var buffer = new VertexBuffer(bufferSize);
+
+            buffer.Map(bufferSize);
+
+            try
             {
-                stream.AddVertices(vertexList);
+                VertexStreamPosition vertexStream = buffer.GetVertexStreamPosition();
+                vertexStream.AddVertices(vertices);
             }
-            catch(Exception e)
+            catch(Exception ex)
             {
                 // TODO SK
             }
 
-            return stream;
+            buffer.Unmap();
+
+            return buffer;
         }
     }
 }

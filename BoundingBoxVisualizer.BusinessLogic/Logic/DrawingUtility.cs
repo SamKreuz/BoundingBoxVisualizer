@@ -7,12 +7,12 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 {
     internal class DrawingUtility
     {
-        public void Setup()
+        public void Setup(GeometryElement geometryElement)
         {
             ExternalServiceId serviceId = ExternalServices.BuiltInExternalServices.DirectContext3DService;
             ExternalService service = ExternalServiceRegistry.GetService(serviceId);
 
-            var painter = new Painter();
+            var painter = new Painter(geometryElement);
 
             service.AddServer(painter);
         }
