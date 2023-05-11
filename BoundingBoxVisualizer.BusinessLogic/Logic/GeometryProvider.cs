@@ -1,67 +1,75 @@
 ﻿using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.ExternalService;
-using BoundingBoxVisualizer.BusinessLogic.Logic.Model;
+using Autodesk.Revit.DB.DirectContext3D;
+using System;
 using System.Collections.Generic;
 
-namespace BoundingBoxVisualizer.BusinessLogic.Logic
+namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
 {
     internal class GeometryProvider
     {
-        public void Setup()
+        private GeometryData geometry;
+
+        public GeometryProvider()
         {
-            ExternalServiceId serviceId = ExternalServices.BuiltInExternalServices.DirectContext3DService;
-            ExternalService service = ExternalServiceRegistry.GetService(serviceId);
+            geometry = new GeometryData();
 
-            var painter = new Painter();
+            //TODO SK: SetUp Geometry
 
-            service.AddServer(painter);
+
+            //Meshes = meshes;
+
+            //PrimitiveType = PrimitiveType.TriangleList;
+            //vertexFormatBits = VertexFormatBits.Position;
+
+            //VertexFormat = new VertexFormat(vertexFormatBits);
+            //EffectInstance = new EffectInstance(vertexFormatBits);
+
+            //List<VertexPositionColored> vertices = new List<VertexPositionColored>();
+
+            //foreach(Mesh mesh in meshes)
+            //{
+            //    vertices.Add(new VertexPositionColored())
+            //}
+
+            //SetUpVertexStream
         }
 
-        //public void CreateGeometry(BoundingBoxXYZ boundingBox)
-        //{
-        //    XYZ min = boundingBox.Min;
-        //    XYZ max = boundingBox.Max;
-
-        //    var dist = max - min;
-
-        //    var middle = min + dist;
-
-        //    Mesh me = new Mesh(middle);
-
-        //    GeometryCreationUtilities.
-
-        //}
-
-        //public void CreateSphere(XYZ center)
-        //{
-        //    Frame frame = new Frame(center, XYZ.BasisX, XYZ.BasisY, XYZ.BasisZ);
-
-        //    Arc arc
-
-        //}
-
-        public Geometry GetGeometry()
+        public GeometryData GetData()
         {
-            //  TODO SK
-            return new Geometry();
-        }
-
-        private Solid CreateExtrudedGeometry(CurveLoop loop)
-        {
-            List<CurveLoop> loops = new List<CurveLoop>();
-            Solid geometry = GeometryCreationUtilities.CreateExtrusionGeometry(loops, XYZ.BasisZ, 20);
-
             return geometry;
         }
 
-        private List<Mesh> GetMeshes(Solid solid)
+        public Outline GetBoundingBox()
         {
-            List<Mesh> meshes = new List<Mesh>();
-            foreach(Face face in solid.Faces)
+            // TODO SK
+            var boundingBox = new BoundingBoxXYZ();
+
+            Outline outline = new Outline(boundingBox.Min, boundingBox.Max);
+
+            return outline;
+        }
+
+        private ColorWithTransparency color = new ColorWithTransparency(255, 0, 0, 0);
+
+        public void ProcessFace()
+        {
+
+        }
+
+        public VertexStreamPositionColored SetUpVertexStream(List<VertexPositionColored> vertexList)
+        {
+            VertexStreamPositionColored stream = VertexBuffer.GetVertexStreamPositionColored();
+            
+             try
             {
-                meshes.Add(face.Triangulate());
+                stream.AddVertices(vertexList);
             }
-            return meshes;
+            catch(Exception e)
+            {
+                // TODO SK
+            }
+
+            return stream;
         }
     }
 }
