@@ -1,10 +1,12 @@
-﻿using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using System;
 
 namespace BoundingBoxVisualizer.BusinessLogic
 {
+    [Transaction(TransactionMode.Manual)]
     internal class Run : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -37,7 +39,7 @@ namespace BoundingBoxVisualizer.BusinessLogic
 
             if(elementReference == null)
             {
-                // TODO SK;
+                // TODO SK
             }
 
             Element element = uiDocument.Document.GetElement(elementReference);
