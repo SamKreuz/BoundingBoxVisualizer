@@ -9,9 +9,12 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 {
     internal class Painter : IDirectContext3DServer
     {
+        private GeometryElement geometryElement;
+
         public Painter(GeometryElement geometryElement)
         {
-            GeometryProvider = new GeometryProvider(geometryElement);
+            this.geometryElement = geometryElement;
+            GeometryProvider = new GeometryProvider();
             guid = Guid.NewGuid();
         }
 
@@ -21,24 +24,45 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
         private ExternalServiceId id = ExternalServices.BuiltInExternalServices.DirectContext3DService;
 
         public bool CanExecute(View dBView) { return true; }
-        public bool UseInTransparentPass(View dBView) { return false; }
+        public bool UseInTransparentPass(View dBView) { return true; }  // TODO SK: Change
         public bool UsesHandles() { return false; }
         public string GetApplicationId() { return string.Empty; }
-        public string GetDescription() { return string.Empty; }
-        public string GetName() { return string.Empty; }
+        public string GetDescription() { return "Draws geometry inside of a Revit model."; }
+        public string GetName() { return "Revit Drawing Server"; }
         public string GetSourceId() { return string.Empty; }
-        public string GetVendorId() { return string.Empty; }
+        public string GetVendorId() { return "Samuel Kreuz"; }
         public Guid GetServerId() { return guid; }
         public ExternalServiceId GetServiceId() { return id; }
 
         public Outline GetBoundingBox(View dBView)
         {
-            return GeometryProvider.GetBoundingBox();
+            var boundingBox = new BoundingBoxXYZ();
+
+            if (geometryElement != null)
+            {
+                try
+                {
+                    boundingBox = geometryElement.GetBoundingBox();
+                }
+                catch(Exception ex)
+                {
+                    // TODO SK: Log
+                }
+            }
+
+            return new Outline(boundingBox.Min, boundingBox.Max);
         }
 
         public void RenderScene(View dBView, DisplayStyle displayStyle)
         {
+            GeometryProvider.SetupData(geometryElement);
             GeometryData geometryData = GeometryProvider.GetData();
+
+            if(geometryData == null)
+            {
+                // TODO SK: Log
+                return;
+            }
 
             try
             {

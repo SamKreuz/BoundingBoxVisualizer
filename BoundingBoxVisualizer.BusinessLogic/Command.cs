@@ -8,7 +8,7 @@ using System;
 namespace BoundingBoxVisualizer.BusinessLogic
 {
     [Transaction(TransactionMode.Manual)]
-    internal class ExternalCommand : IExternalCommand
+    internal class Command : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
