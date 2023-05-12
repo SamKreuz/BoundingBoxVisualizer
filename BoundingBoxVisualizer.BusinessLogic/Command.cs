@@ -22,8 +22,9 @@ namespace BoundingBoxVisualizer.BusinessLogic
             }
 
             GeometryElement geometry = element.get_Geometry(new Options());
+            
 
-            new DrawingUtility().Setup(geometry);
+            new ServiceUtility().Setup(geometry);
 
             uiDocument.UpdateAllOpenViews();
 

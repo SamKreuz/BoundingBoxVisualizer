@@ -9,16 +9,15 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 {
     internal class Painter : IDirectContext3DServer
     {
-        private GeometryElement geometryElement;
-
-        public Painter(GeometryElement geometryElement)
+        private GeometryObject geometryObject;
+        public Painter(GeometryObject geometryElement)
         {
-            this.geometryElement = geometryElement;
-            GeometryProvider = new GeometryProvider();
+            this.geometryObject = geometryElement;
+            GeometryProvider = new GeometryManager();
             guid = Guid.NewGuid();
         }
 
-        public GeometryProvider GeometryProvider { get; }
+        public GeometryManager GeometryProvider { get; }
 
         private Guid guid;
         private ExternalServiceId id = ExternalServices.BuiltInExternalServices.DirectContext3DService;
@@ -38,11 +37,18 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
         {
             var boundingBox = new BoundingBoxXYZ();
 
-            if (geometryElement != null)
+            if (geometryObject != null)
             {
                 try
                 {
-                    boundingBox = geometryElement.GetBoundingBox();
+                    if (geometryObject is GeometryElement geometryElement)
+                    {
+                        boundingBox = geometryElement.GetBoundingBox();
+                    }
+                    else if(geometryObject is Solid solid)
+                    {
+                        boundingBox = solid.GetBoundingBox();
+                    }
                 }
                 catch(Exception ex)
                 {
@@ -55,7 +61,7 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 
         public void RenderScene(View dBView, DisplayStyle displayStyle)
         {
-            GeometryProvider.SetupData(geometryElement);
+            GeometryProvider.SetupData(geometryObject);
             GeometryData geometryData = GeometryProvider.GetData();
 
             if(geometryData == null)
@@ -76,7 +82,6 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
                     geometryData.PrimitiveType,
                     geometryData.Start,
                     geometryData.PrimitiveCount);
-
             }
             catch (Exception e)
             {

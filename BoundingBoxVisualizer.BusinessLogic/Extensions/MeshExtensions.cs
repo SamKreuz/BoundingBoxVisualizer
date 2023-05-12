@@ -6,13 +6,13 @@ namespace BoundingBoxVisualizer.BusinessLogic.Extensions
 {
     public static class MeshExtensions
     {
-        public static List<VertexPosition> VertexPositions(this Mesh mesh)
+        public static List<VertexPositionColored> VertexPositionsColored(this Mesh mesh, ColorWithTransparency color)
         {
-            List<VertexPosition> vertices = new List<VertexPosition>();
+            List<VertexPositionColored> vertices = new List<VertexPositionColored>();
 
             foreach(var vertex in mesh.Vertices)
             {
-                vertices.Add(new VertexPosition(vertex));
+                vertices.Add(new VertexPositionColored(vertex, color));
             }
 
             return vertices;

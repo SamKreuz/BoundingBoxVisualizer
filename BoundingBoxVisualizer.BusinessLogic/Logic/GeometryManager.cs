@@ -7,14 +7,25 @@ using System.Linq;
 
 namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
 {
-    internal class GeometryProvider
+    internal class GeometryManager
     {
         private GeometryData geometry;
         private List<int> numVerticesInMeshesBefore = new List<int> { 0 };
 
-        public void SetupData(GeometryElement geometryElement)
+        public void SetupData(GeometryObject geometryObject)
         {
-            List<Mesh> meshes = GetMeshes(geometryElement);
+            List<Mesh> meshes = new List<Mesh>();
+
+            if (geometryObject is GeometryElement geometryElement)
+            {
+                var solids = GetSolids(geometryElement);
+                meshes = GetMeshes(solids);
+            }
+            else if (geometryObject is Solid solid)
+            {
+                meshes = GetMeshes(new List<Solid>{ solid });
+            }
+
             List<VertexPosition> vertices = GetVertexPositions(meshes);
 
             geometry = new GeometryData();
@@ -27,12 +38,9 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
             geometry.EffectInstance = new EffectInstance(geometry.VertexFormatBits);
             geometry.PrimitiveCount = CountTriangles(meshes);
             geometry.VertexCount = CountVertices(meshes);
-
             geometry.VertexBuffer = CreateVertexBuffer(meshes, geometry.VertexCount);
-
             geometry.IndexCount = GetIndicesAsShortInts(geometry.PrimitiveCount);
             geometry.IndexBuffer = CreateIndexBuffer(meshes, geometry.IndexCount);
-
         }
 
         public GeometryData GetData()
@@ -40,9 +48,8 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
             return geometry;
         }
 
-        private List<Mesh> GetMeshes(GeometryElement geometryElement)
+        private List<Solid> GetSolids(GeometryElement geometryElement)
         {
-            List<Mesh> meshes = new List<Mesh>();
             List<Solid> solids = new List<Solid>();
 
             foreach (GeometryObject geomObject in geometryElement)
@@ -58,6 +65,13 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
                 }
             }
 
+            return solids;
+        }
+
+        private List<Mesh> GetMeshes(List<Solid> solids)
+        {
+            List<Mesh> meshes = new List<Mesh>();
+
             if (solids.Count > 0)
             {
                 foreach (var solid in solids)
@@ -70,7 +84,6 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
                     }
                 }
             }
-
             return meshes;
         }
 
@@ -161,21 +174,15 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
 
             foreach (Mesh mesh in meshes)
             {
-
-                foreach (var vertex in mesh.Vertices)
+                try
                 {
-                    try
-                    {
-                        // TODO SK: Delete extension .AddVertices
-                        vertexStream.AddVertex(new VertexPositionColored(vertex, color));
-                    }
-                    catch (Exception ex)
-                    {
-                        // TODO SK
-                    }
-
+                    var vertexPositions = mesh.VertexPositionsColored(color);
+                    vertexStream.AddVertices(vertexPositions);
                 }
-
+                catch (Exception ex)
+                {
+                    // TODO SK
+                }
 
                 numVerticesInMeshesBefore.Add(numVerticesInMeshesBefore.Last() + mesh.Vertices.Count);
             }
