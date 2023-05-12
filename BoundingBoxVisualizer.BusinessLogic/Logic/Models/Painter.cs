@@ -47,12 +47,12 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
                     {
                         boundingBox = geometryElement.GetBoundingBox();
                     }
-                    else if(geometryObject is Solid solid)
+                    else if (geometryObject is Solid solid)
                     {
                         boundingBox = solid.GetBoundingBox();
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     // TODO SK: Log
                 }
@@ -66,9 +66,10 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
             if (DrawContext.IsTransparentPass())
             {
                 GeometryProvider.SetupData(geometryObject, color);
-                GeometryData geometryData = GeometryProvider.GetData();
+                GeometryData facesData = GeometryProvider.GetFacesData();
+                GeometryData edgesData = GeometryProvider.GetEdgesData();
 
-                if (geometryData == null)
+                if (facesData == null)
                 {
                     // TODO SK: Log
                     return;
@@ -77,15 +78,26 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
                 try
                 {
                     DrawContext.FlushBuffer(
-                        geometryData.VertexBuffer,
-                        geometryData.VertexCount,
-                        geometryData.IndexBuffer,
-                        geometryData.IndexCount,
-                        geometryData.VertexFormat,
-                        geometryData.EffectInstance,
-                        geometryData.PrimitiveType,
-                        geometryData.Start,
-                        geometryData.PrimitiveCount);
+                        facesData.VertexBuffer,
+                        facesData.VertexCount,
+                        facesData.IndexBuffer,
+                        facesData.IndexCount,
+                        facesData.VertexFormat,
+                        facesData.EffectInstance,
+                        facesData.PrimitiveType,
+                        facesData.Start,
+                        facesData.PrimitiveCount);
+
+                    DrawContext.FlushBuffer(
+                        edgesData.VertexBuffer,
+                        edgesData.VertexCount,
+                        edgesData.IndexBuffer,
+                        edgesData.IndexCount,
+                        edgesData.VertexFormat,
+                        edgesData.EffectInstance,
+                        edgesData.PrimitiveType,
+                        edgesData.Start,
+                        edgesData.PrimitiveCount);
                 }
                 catch (Exception e)
                 {

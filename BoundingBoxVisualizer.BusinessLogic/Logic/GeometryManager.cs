@@ -9,43 +9,66 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
 {
     internal class GeometryManager
     {
-        private GeometryData geometry;
+        private GeometryData faces;
+        private GeometryData edges;
         private List<int> numVerticesInMeshesBefore = new List<int> { 0 };
+        private List<int> numVerticesInEdgesBefore = new List<int> { 0 };
+        private List<IList<XYZ>> edgePointGroups = new List<IList<XYZ>>();
 
         public void SetupData(GeometryObject geometryObject, ColorWithTransparency color)
         {
             List<Mesh> meshes = new List<Mesh>();
 
+            faces = new GeometryData();
+            edges = new GeometryData();
+
             if (geometryObject is GeometryElement geometryElement)
             {
                 var solids = GetSolids(geometryElement);
+                SetEdgeData(solids);
                 meshes = GetMeshes(solids);
             }
             else if (geometryObject is Solid solid)
             {
-                meshes = GetMeshes(new List<Solid>{ solid });
+                var solids = new List<Solid> { solid };
+                SetEdgeData(solids);
+                meshes = GetMeshes(solids);
             }
 
-            List<VertexPosition> vertices = GetVertexPositions(meshes);
+            //List<VertexPosition> vertices = GetVertexPositions(meshes);
 
-            geometry = new GeometryData();
+            faces.Meshes = meshes;
+            faces.Start = 0;
+            faces.PrimitiveType = PrimitiveType.TriangleList;
+            faces.VertexFormatBits = VertexFormatBits.PositionColored;
+            faces.VertexFormat = new VertexFormat(faces.VertexFormatBits);
+            faces.EffectInstance = new EffectInstance(faces.VertexFormatBits);
+            faces.PrimitiveCount = CountTriangles(meshes);
+            faces.VertexCount = CountVertices(meshes);
+            faces.VertexBuffer = CreateVertexBufferPositionColor(meshes, faces.VertexCount, color);
+            faces.IndexCount = GetIndexTriangleAsShortInts(faces.PrimitiveCount);
+            faces.IndexBuffer = CreateIndexBufferTriangle(meshes, faces.IndexCount);
 
-            geometry.Meshes = meshes;
-            geometry.Start = 0;
-            geometry.PrimitiveType = PrimitiveType.TriangleList;
-            geometry.VertexFormatBits = VertexFormatBits.PositionColored;
-            geometry.VertexFormat = new VertexFormat(geometry.VertexFormatBits);
-            geometry.EffectInstance = new EffectInstance(geometry.VertexFormatBits);
-            geometry.PrimitiveCount = CountTriangles(meshes);
-            geometry.VertexCount = CountVertices(meshes);
-            geometry.VertexBuffer = CreateVertexBuffer(meshes, geometry.VertexCount, color);
-            geometry.IndexCount = GetIndicesAsShortInts(geometry.PrimitiveCount);
-            geometry.IndexBuffer = CreateIndexBuffer(meshes, geometry.IndexCount);
+            edges.Start = 0;
+            edges.PrimitiveType = PrimitiveType.LineList;   // TODO SK: Test point list
+            edges.VertexFormatBits = VertexFormatBits.Position;
+            edges.VertexFormat = new VertexFormat(edges.VertexFormatBits);
+            edges.EffectInstance = new EffectInstance(edges.VertexFormatBits);
+            edges.VertexBuffer = CreateVertexBufferEdges(edgePointGroups, edges.VertexCount);
+            edges.IndexCount = GetIndexLineShortInts(edges.PrimitiveCount);
+            edges.IndexBuffer = CreateIndexBufferLine(edgePointGroups, edges.IndexCount);
         }
 
-        public GeometryData GetData()
+
+
+        public GeometryData GetFacesData()
         {
-            return geometry;
+            return faces;
+        }
+
+        public GeometryData GetEdgesData()
+        {
+            return edges;
         }
 
         private List<Solid> GetSolids(GeometryElement geometryElement)
@@ -87,6 +110,29 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
             return meshes;
         }
 
+        private void SetEdgeData(List<Solid> solids)
+        {
+            int vertexCount = 0;
+            int primitiveCount = 0;
+            edgePointGroups.Clear();
+
+
+            foreach (Solid solid in solids)
+            {
+                foreach(Edge edge in solid.Edges)
+                {
+                    IList<XYZ> points = edge.Tessellate();
+                    
+                    edgePointGroups.Add(points);
+                    vertexCount += points.Count;
+                    primitiveCount += points.Count - 1;
+                }
+            }
+
+            edges.PrimitiveCount = primitiveCount;
+            edges.VertexCount = vertexCount;
+        }
+
         private List<VertexPosition> GetVertexPositions(List<Mesh> meshes)
         {
             List<VertexPosition> vertices = new List<VertexPosition>();
@@ -126,12 +172,17 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
             return numberOfVertices;
         }
 
-        private int GetIndicesAsShortInts(int primitiveCount)
+        private int GetIndexTriangleAsShortInts(int primitiveCount)
         {
             return primitiveCount * IndexTriangle.GetSizeInShortInts();
         }
 
-        private IndexBuffer CreateIndexBuffer(List<Mesh> meshes, int indexCount)
+        private int GetIndexLineShortInts(int primitiveCount)
+        {
+            return primitiveCount * IndexLine.GetSizeInShortInts();
+        }
+
+        private IndexBuffer CreateIndexBufferTriangle(List<Mesh> meshes, int indexCount)
         {
             int meshNumber = 0;
             //int bufferSize = indexCount * IndexTriangle.GetSizeInShortInts();
@@ -161,7 +212,34 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
             return buffer;
         }
 
-        private VertexBuffer CreateVertexBuffer(List<Mesh> meshes, int vertexCount, ColorWithTransparency color)
+        private IndexBuffer CreateIndexBufferLine(List<IList<XYZ>> edges, int indexCount)
+        {
+            int edgeNumber = 0;
+
+            var buffer = new IndexBuffer(indexCount);
+
+            buffer.Map(indexCount);
+
+            IndexStreamLine stream = buffer.GetIndexStreamLine();
+
+            foreach (IList<XYZ> edge in edges)
+            {
+                int startIndex = numVerticesInEdgesBefore[edgeNumber];  // TODO SK: Apply as foreach loop?
+                for (int i = 1; i < edge.Count; i++)
+                {
+                    stream.AddLine(new IndexLine(startIndex + i - 1,
+                                                 startIndex + i));
+                }
+                edgeNumber++;
+            }
+
+            buffer.Unmap();
+
+            return buffer;
+        }
+
+
+        private VertexBuffer CreateVertexBufferPositionColor(List<Mesh> meshes, int vertexCount, ColorWithTransparency color)
         {
             int bufferSize = VertexPositionColored.GetSizeInFloats() * vertexCount;
 
@@ -186,6 +264,38 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
                 numVerticesInMeshesBefore.Add(numVerticesInMeshesBefore.Last() + mesh.Vertices.Count);
             }
 
+
+            buffer.Unmap();
+
+            return buffer;
+        }
+
+        private VertexBuffer CreateVertexBufferEdges(List<IList<XYZ>> edges, int vertexCount)
+        {
+            int bufferSize = VertexPosition.GetSizeInFloats() * vertexCount;
+
+            var buffer = new VertexBuffer(bufferSize);
+
+            buffer.Map(bufferSize);
+
+            VertexStreamPosition vertexStream = buffer.GetVertexStreamPosition();
+
+            foreach (IList<XYZ> pointList in edges)
+            {
+                foreach(XYZ point in pointList)
+                {
+                    try
+                    {
+                        vertexStream.AddVertex(new VertexPosition(point));  // TODO SK: make extension
+                    }
+                    catch (Exception ex)
+                    {
+                        // TODO SK
+                    }
+                }
+
+                numVerticesInEdgesBefore.Add(numVerticesInEdgesBefore.Last() + pointList.Count);
+            }
 
             buffer.Unmap();
 

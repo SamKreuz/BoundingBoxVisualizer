@@ -12,10 +12,11 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
             ExternalServiceId serviceId = ExternalServices.BuiltInExternalServices.DirectContext3DService;
             ExternalService service = ExternalServiceRegistry.GetService(serviceId);
             var geometryCreater = new GeometryCreator();
-            var bb = geometryElement.GetBoundingBox();
-            var t = bb.Transform;
+            
+            var boundingBox = geometryElement.GetBoundingBox();
+            var transform = boundingBox.Transform;
 
-            Solid solid = geometryCreater.CreateGeometryFromBoundingBox(bb);
+            Solid solid = geometryCreater.CreateGeometryFromBoundingBox(boundingBox);
             //Solid solid = geometryCreater.CreateCenterbasedBox(XYZ.Zero, 10);
             
             //Transparency is value between 0-255

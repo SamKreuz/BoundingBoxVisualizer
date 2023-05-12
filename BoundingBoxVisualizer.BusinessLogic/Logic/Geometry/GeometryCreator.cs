@@ -5,11 +5,6 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 {
     internal class GeometryCreator
     {
-        //public Solid CreateSphere()
-        //{
-        //    GeometryCreationUtilities.CreateExtrusionGeometry()
-        //}
-
         // Copied from Reivt SKD Sample 2023
         public Solid CreateCenterbasedBox(XYZ center, double edgelength)
         {
