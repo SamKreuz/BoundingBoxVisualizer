@@ -12,7 +12,7 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
         private GeometryData geometry;
         private List<int> numVerticesInMeshesBefore = new List<int> { 0 };
 
-        public void SetupData(GeometryObject geometryObject)
+        public void SetupData(GeometryObject geometryObject, ColorWithTransparency color)
         {
             List<Mesh> meshes = new List<Mesh>();
 
@@ -38,7 +38,7 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
             geometry.EffectInstance = new EffectInstance(geometry.VertexFormatBits);
             geometry.PrimitiveCount = CountTriangles(meshes);
             geometry.VertexCount = CountVertices(meshes);
-            geometry.VertexBuffer = CreateVertexBuffer(meshes, geometry.VertexCount);
+            geometry.VertexBuffer = CreateVertexBuffer(meshes, geometry.VertexCount, color);
             geometry.IndexCount = GetIndicesAsShortInts(geometry.PrimitiveCount);
             geometry.IndexBuffer = CreateIndexBuffer(meshes, geometry.IndexCount);
         }
@@ -161,11 +161,10 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
             return buffer;
         }
 
-        private VertexBuffer CreateVertexBuffer(List<Mesh> meshes, int vertexCount)
+        private VertexBuffer CreateVertexBuffer(List<Mesh> meshes, int vertexCount, ColorWithTransparency color)
         {
             int bufferSize = VertexPositionColored.GetSizeInFloats() * vertexCount;
 
-            var color = new ColorWithTransparency(255, 0, 0, 0);
             var buffer = new VertexBuffer(bufferSize);
 
             buffer.Map(bufferSize);

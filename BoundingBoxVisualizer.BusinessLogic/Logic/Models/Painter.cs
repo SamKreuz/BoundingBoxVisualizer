@@ -10,9 +10,11 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
     internal class Painter : IDirectContext3DServer
     {
         private GeometryObject geometryObject;
-        public Painter(GeometryObject geometryElement)
+        private ColorWithTransparency color;
+        public Painter(GeometryObject geometryElement, ColorWithTransparency color)
         {
             this.geometryObject = geometryElement;
+            this.color = color;
             GeometryProvider = new GeometryManager();
             guid = Guid.NewGuid();
         }
@@ -61,35 +63,38 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 
         public void RenderScene(View dBView, DisplayStyle displayStyle)
         {
-            GeometryProvider.SetupData(geometryObject);
-            GeometryData geometryData = GeometryProvider.GetData();
-
-            if(geometryData == null)
+            if (DrawContext.IsTransparentPass())
             {
-                // TODO SK: Log
-                return;
-            }
+                GeometryProvider.SetupData(geometryObject, color);
+                GeometryData geometryData = GeometryProvider.GetData();
 
-            try
-            {
-                DrawContext.FlushBuffer(
-                    geometryData.VertexBuffer,
-                    geometryData.VertexCount,
-                    geometryData.IndexBuffer,
-                    geometryData.IndexCount,
-                    geometryData.VertexFormat,
-                    geometryData.EffectInstance,
-                    geometryData.PrimitiveType,
-                    geometryData.Start,
-                    geometryData.PrimitiveCount);
-            }
-            catch (Exception e)
-            {
-                // TODO SK
-                TaskDialog.Show("Exception", e.Message);
+                if (geometryData == null)
+                {
+                    // TODO SK: Log
+                    return;
+                }
 
-                // TODO SK: Compare to
-                System.Windows.Forms.MessageBox.Show(e.ToString());
+                try
+                {
+                    DrawContext.FlushBuffer(
+                        geometryData.VertexBuffer,
+                        geometryData.VertexCount,
+                        geometryData.IndexBuffer,
+                        geometryData.IndexCount,
+                        geometryData.VertexFormat,
+                        geometryData.EffectInstance,
+                        geometryData.PrimitiveType,
+                        geometryData.Start,
+                        geometryData.PrimitiveCount);
+                }
+                catch (Exception e)
+                {
+                    // TODO SK
+                    TaskDialog.Show("Exception", e.Message);
+
+                    // TODO SK: Compare to
+                    System.Windows.Forms.MessageBox.Show(e.ToString());
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
         //    GeometryCreationUtilities.CreateExtrusionGeometry()
         //}
 
+        // Copied from Reivt SKD Sample 2023
         public Solid CreateCenterbasedBox(XYZ center, double edgelength)
         {
             double halfedgelength = edgelength / 2.0;
@@ -34,7 +35,12 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 
             double extrusiondist = edgelength;
 
-            return GeometryCreationUtilities.CreateExtrusionGeometry(profileloops, extrusiondir, extrusiondist);
+            var solid = GeometryCreationUtilities.CreateExtrusionGeometry(profileloops, extrusiondir, extrusiondist);
+
+            Transform transform = Transform.CreateRotation(XYZ.BasisZ, 0.785398);
+            var transformedSolis = SolidUtils.CreateTransformed(solid, transform);
+
+            return transformedSolis;
         }
     }
 }
