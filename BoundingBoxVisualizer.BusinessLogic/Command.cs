@@ -23,8 +23,7 @@ namespace BoundingBoxVisualizer.BusinessLogic
 
             GeometryElement geometry = element.get_Geometry(new Options());
             
-
-            new ServiceUtility().Setup(geometry);
+            new ServiceUtility().AddServer(geometry);
 
             uiDocument.UpdateAllOpenViews();
 
@@ -48,6 +47,7 @@ namespace BoundingBoxVisualizer.BusinessLogic
             if(elementReference == null)
             {
                 // TODO SK
+                return null;
             }
 
             Element element = uiDocument.Document.GetElement(elementReference);

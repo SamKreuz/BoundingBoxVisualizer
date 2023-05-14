@@ -7,15 +7,19 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 {
     internal class ServiceUtility
     {
-        public void Setup(GeometryElement geometryElement)
+        private ExternalService service;
+        public ServiceUtility()
         {
             ExternalServiceId serviceId = ExternalServices.BuiltInExternalServices.DirectContext3DService;
-            ExternalService service = ExternalServiceRegistry.GetService(serviceId);
-            var geometryCreater = new GeometryCreator();
-            
+            service = ExternalServiceRegistry.GetService(serviceId);
+        }
+
+        public void AddServer(GeometryElement geometryElement)
+        {
             var boundingBox = geometryElement.GetBoundingBox();
             var transform = boundingBox.Transform;
-
+            
+            var geometryCreater = new GeometryCreator();
             Solid solid = geometryCreater.CreateGeometryFromBoundingBox(boundingBox);
             //Solid solid = geometryCreater.CreateCenterbasedBox(XYZ.Zero, 10);
             
@@ -26,17 +30,29 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
             //var painterElement = new Painter(geometryElement, colorRed);
             var painterGeometry = new Painter(solid, colorGreen);
 
-            //service.AddServer(painterElement);
-            service.AddServer(painterGeometry);
+            SetServer(painterGeometry);
+        }
 
-            // TODO SK: Check if needed. Probably only for multiple servers;
-            MultiServerService msDirectContext3DService = service as MultiServerService;
-            
-            IList<Guid> serverIds = msDirectContext3DService.GetActiveServerIds();
-            //serverIds.Add(painterElement.GetServerId());
-            serverIds.Add(painterGeometry.GetServerId());
+        private bool SetServer(Painter painter)
+        {
+            try
+            {
+                service.AddServer(painter);
 
-            msDirectContext3DService.SetActiveServers(serverIds);
+                MultiServerService msDirectContext3DService = service as MultiServerService;
+
+                IList<Guid> serverIds = msDirectContext3DService.GetActiveServerIds();
+                //serverIds.Add(painterElement.GetServerId());
+                serverIds.Add(painter.GetServerId());
+
+                msDirectContext3DService.SetActiveServers(serverIds);
+            }catch(Exception e)
+            {
+                //TODO SK: Log
+                return false;
+            }
+
+            return true;
         }
     }
 }
