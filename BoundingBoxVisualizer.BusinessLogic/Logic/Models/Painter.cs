@@ -9,10 +9,14 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 {
     internal class Painter : IDirectContext3DServer
     {
+        public Document Document { get { return uiDocument.Document; } }
+
         private GeometryObject geometryObject;
         private ColorWithTransparency color;
-        public Painter(GeometryObject geometryElement, ColorWithTransparency color)
+        private UIDocument uiDocument;
+        public Painter(UIDocument uiDocuemnt, GeometryObject geometryElement, ColorWithTransparency color)
         {
+            this.uiDocument = uiDocuemnt;
             this.geometryObject = geometryElement;
             this.color = color;
             GeometryProvider = new GeometryManager();
