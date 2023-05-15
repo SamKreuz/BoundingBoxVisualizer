@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using System.Collections.Generic;
 
-namespace BoundingBoxVisualizer.BusinessLogic.Logic
+namespace BoundingBoxVisualizer.Logic.Logic
 {
     internal class GeometryCreator
     {

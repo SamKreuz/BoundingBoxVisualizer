@@ -2,7 +2,7 @@
 using Autodesk.Revit.DB.DirectContext3D;
 using System.Collections.Generic;
 
-namespace BoundingBoxVisualizer.BusinessLogic.Extensions
+namespace BoundingBoxVisualizer.Logic.Extensions
 {
     public static class MeshExtensions
     {

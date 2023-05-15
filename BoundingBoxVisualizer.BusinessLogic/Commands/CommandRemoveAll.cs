@@ -1,9 +1,9 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using BoundingBoxVisualizer.BusinessLogic.Logic;
+using BoundingBoxVisualizer.Logic.Logic;
 
-namespace BoundingBoxVisualizer.BusinessLogic.Commands
+namespace BoundingBoxVisualizer.Logic.Commands
 {
     [Transaction(TransactionMode.Manual)]
     internal class CommandRemoveAll : IExternalCommand

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoundingBoxVisualizer.BusinessLogic.Logic.Models
+namespace BoundingBoxVisualizer.Logic.Logic.Models
 {
     internal class Line
     {

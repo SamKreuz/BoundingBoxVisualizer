@@ -1,6 +1,6 @@
 ﻿using Autodesk.Revit.UI;
 
-namespace BoundingBoxVisualizer.BusinessLogic
+namespace BoundingBoxVisualizer.Logic
 {
     public class Application : IExternalApplication
     {

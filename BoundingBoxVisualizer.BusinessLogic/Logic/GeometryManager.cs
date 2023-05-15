@@ -1,11 +1,12 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.DirectContext3D;
-using BoundingBoxVisualizer.BusinessLogic.Extensions;
+using BoundingBoxVisualizer.Logic.Extensions;
+using BoundingBoxVisualizer.Logic.Logic.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
+namespace BoundingBoxVisualizer.Logic.Logic
 {
     internal class GeometryManager
     {

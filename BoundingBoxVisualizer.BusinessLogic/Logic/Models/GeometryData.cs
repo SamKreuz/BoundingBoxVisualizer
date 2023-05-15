@@ -2,7 +2,7 @@
 using Autodesk.Revit.DB;
 using System.Collections.Generic;
 
-namespace BoundingBoxVisualizer.BusinessLogic.Logic.Model
+namespace BoundingBoxVisualizer.Logic.Logic.Model
 {
     public class GeometryData
     {

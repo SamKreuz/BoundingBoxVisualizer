@@ -1,10 +1,11 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExternalService;
 using Autodesk.Revit.UI;
+using BoundingBoxVisualizer.Logic.Logic;
 using System;
 using System.Collections.Generic;
 
-namespace BoundingBoxVisualizer.BusinessLogic.Logic
+namespace BoundingBoxVisualizer.Logic.Logic
 {
     internal class ServiceUtility
     {
@@ -20,7 +21,7 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
             var boundingBox = geometryElement.GetBoundingBox();
             var geometryCreater = new GeometryCreator();
             Solid solid = geometryCreater.CreateGeometryFromBoundingBox(boundingBox);
-            
+
             //Transparency is value between 0-255
             var colorRed = new ColorWithTransparency(255, 0, 0, 200);
             var colorGreen = new ColorWithTransparency(0, 255, 0, 200);
@@ -43,17 +44,17 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 
             var registeredIds = directContext3DService.GetRegisteredServerIds();
 
-            foreach(var id in registeredIds)
+            foreach (var id in registeredIds)
             {
                 Painter painter = directContext3DService.GetServer(id) as Painter;
 
-                if(painter.Document.GetHashCode() == document.GetHashCode())
+                if (painter.Document.GetHashCode() == document.GetHashCode())
                 {
                     try
                     {
                         directContext3DService.RemoveServer(id);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         // TODO SK: Log
                     }
@@ -70,7 +71,7 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 
                 MultiServerService msDirectContext3DService = service as MultiServerService;
 
-                if(msDirectContext3DService == null)
+                if (msDirectContext3DService == null)
                 {
                     return true;
                 }
@@ -80,7 +81,8 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 
                 msDirectContext3DService.SetActiveServers(serverIds);
 
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 //TODO SK: Log
                 return false;

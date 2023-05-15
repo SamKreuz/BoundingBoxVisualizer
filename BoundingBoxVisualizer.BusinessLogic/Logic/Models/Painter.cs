@@ -2,10 +2,10 @@
 using Autodesk.Revit.DB.DirectContext3D;
 using Autodesk.Revit.DB.ExternalService;
 using Autodesk.Revit.UI;
-using BoundingBoxVisualizer.BusinessLogic.Logic.Model;
+using BoundingBoxVisualizer.Logic.Logic.Model;
 using System;
 
-namespace BoundingBoxVisualizer.BusinessLogic.Logic
+namespace BoundingBoxVisualizer.Logic.Logic
 {
     internal class Painter : IDirectContext3DServer
     {

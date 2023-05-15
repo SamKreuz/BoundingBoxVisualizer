@@ -2,10 +2,10 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using BoundingBoxVisualizer.BusinessLogic.Logic;
+using BoundingBoxVisualizer.Logic.Logic;
 using System;
 
-namespace BoundingBoxVisualizer.BusinessLogic
+namespace BoundingBoxVisualizer.Logic
 {
     [Transaction(TransactionMode.Manual)]
     internal class Command : IExternalCommand
