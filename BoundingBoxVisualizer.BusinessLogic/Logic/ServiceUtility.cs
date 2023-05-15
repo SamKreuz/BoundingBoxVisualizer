@@ -30,13 +30,15 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
             SetServer(painterGeometry);
         }
 
-        public void RemoveAllServers(Document document)
+        public bool RemoveAllServers(Document document)
         {
+            bool result = false;
             MultiServerService directContext3DService = service as MultiServerService;
 
             if (directContext3DService == null)
             {
-                return;
+                // TODO SK: Log
+                return false;
             }
 
             var registeredIds = directContext3DService.GetRegisteredServerIds();
@@ -47,9 +49,17 @@ namespace BoundingBoxVisualizer.BusinessLogic.Logic
 
                 if(painter.Document.GetHashCode() == document.GetHashCode())
                 {
-                    // TODO SK: Remove server
+                    try
+                    {
+                        directContext3DService.RemoveServer(id);
+                    }
+                    catch(Exception ex)
+                    {
+                        // TODO SK: Log
+                    }
                 }
             }
+            return result;
         }
 
         private bool SetServer(Painter painter)

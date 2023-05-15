@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Commands\CommandRemoveAll.cs" />
     <Compile Include="Extensions\MeshExtensions.cs" />
     <Compile Include="Logic\Geometry\GeometryCreator.cs" />
     <Compile Include="Logic\Models\Line.cs" />
@@ -57,7 +58,7 @@
     <Compile Include="Logic\GeometryManager.cs" />
     <Compile Include="Logic\Models\Painter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Command.cs" />
+    <Compile Include="Commands\Command.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
