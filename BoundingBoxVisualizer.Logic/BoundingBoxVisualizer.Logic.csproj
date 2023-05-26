@@ -7,8 +7,8 @@
     <ProjectGuid>{0148F810-7676-4CFD-A4BA-A47F44D0693F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BoundingBoxVisualizer.BusinessLogic</RootNamespace>
-    <AssemblyName>BoundingBoxVisualizer.BusinessLogic</AssemblyName>
+    <RootNamespace>BoundingBoxVisualizer.Logic</RootNamespace>
+    <AssemblyName>BoundingBoxVisualizer.Logic</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -58,7 +58,7 @@
     <Compile Include="Logic\GeometryManager.cs" />
     <Compile Include="Logic\Models\Painter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandShow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

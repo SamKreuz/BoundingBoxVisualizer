@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.Attributes;
+﻿using System;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using BoundingBoxVisualizer.Logic.Logic;
@@ -10,9 +11,18 @@ namespace BoundingBoxVisualizer.Logic.Commands
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            bool result = new ServiceUtility().RemoveAllServers(commandData.Application.ActiveUIDocument.Document);
+            bool successul = false;
 
-            if(!result)
+            try
+            {
+                successul = new ServiceUtility().RemoveAllServers(commandData.Application.ActiveUIDocument.Document);
+            }
+            catch(Exception ex)
+            {
+                // TODO SK: Log
+            }
+
+            if (!successul)
             {
                 return Result.Failed;
             }

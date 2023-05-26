@@ -8,7 +8,7 @@ using System;
 namespace BoundingBoxVisualizer.Logic
 {
     [Transaction(TransactionMode.Manual)]
-    internal class Command : IExternalCommand
+    internal class CommandShow : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -23,7 +23,14 @@ namespace BoundingBoxVisualizer.Logic
 
             GeometryElement geometry = element.get_Geometry(new Options());
             
-            new ServiceUtility().AddServer(uiDocument, geometry);
+            try
+            {
+                new ServiceUtility().AddServer(uiDocument, geometry);
+            }
+            catch(Exception ex)
+            {   
+                // TODO SK: Log
+            }
 
             uiDocument.UpdateAllOpenViews();
 

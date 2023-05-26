@@ -1,7 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExternalService;
 using Autodesk.Revit.UI;
-using BoundingBoxVisualizer.Logic.Logic;
 using System;
 using System.Collections.Generic;
 
