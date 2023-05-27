@@ -21,11 +21,9 @@ namespace BoundingBoxVisualizer.Logic.Logic
             var geometryCreater = new GeometryCreator();
             Solid solid = geometryCreater.CreateGeometryFromBoundingBox(boundingBox);
 
-            //Transparency is value between 0-255
-            var colorRed = new ColorWithTransparency(255, 0, 0, 200);
-            var colorGreen = new ColorWithTransparency(0, 255, 0, 200);
+            var color = ColorProvider.GetRandomColor();
 
-            var painterGeometry = new Painter(uiDocument, solid, colorGreen);
+            var painterGeometry = new Painter(uiDocument, solid, color);
 
             SetServer(painterGeometry);
         }

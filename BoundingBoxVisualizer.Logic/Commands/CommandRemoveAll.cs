@@ -19,7 +19,7 @@ namespace BoundingBoxVisualizer.Logic.Commands
             }
             catch(Exception ex)
             {
-                // TODO SK: Log
+                Application.Logger.Error("Failed to remoce all existing Direct Context servers.");
             }
 
             if (!successul)

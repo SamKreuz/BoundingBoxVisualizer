@@ -1,4 +1,5 @@
 ﻿using Autodesk.Revit.DB;
+using System;
 using System.Collections.Generic;
 
 namespace BoundingBoxVisualizer.Logic.Logic
@@ -63,7 +64,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
             List<CurveLoop> profiles = new List<CurveLoop> { profile };
 
             XYZ extrusionDirection = XYZ.BasisZ;
-            double extrusionDistance = max.Z - min.Z; 
+            double extrusionDistance = Math.Abs(max.Z - min.Z); 
 
             var solid = GeometryCreationUtilities.CreateExtrusionGeometry(profiles, extrusionDirection, extrusionDistance);
 

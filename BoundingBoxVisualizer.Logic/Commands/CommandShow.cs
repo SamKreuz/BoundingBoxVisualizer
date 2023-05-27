@@ -5,7 +5,7 @@ using Autodesk.Revit.UI.Selection;
 using BoundingBoxVisualizer.Logic.Logic;
 using System;
 
-namespace BoundingBoxVisualizer.Logic
+namespace BoundingBoxVisualizer.Logic.Commands
 {
     [Transaction(TransactionMode.Manual)]
     internal class CommandShow : IExternalCommand
@@ -16,20 +16,20 @@ namespace BoundingBoxVisualizer.Logic
 
             Element element = PickElement(uiDocument);
 
-            if(element == null)
+            if (element == null)
             {
                 return Result.Failed;
             }
 
             GeometryElement geometry = element.get_Geometry(new Options());
-            
+
             try
             {
                 new ServiceUtility().AddServer(uiDocument, geometry);
             }
-            catch(Exception ex)
-            {   
-                // TODO SK: Log
+            catch (Exception ex)
+            {
+                Application.Logger.Error("Failed to create new server.", ex);
             }
 
             uiDocument.UpdateAllOpenViews();
@@ -45,13 +45,13 @@ namespace BoundingBoxVisualizer.Logic
             {
                 elementReference = uiDocument.Selection.PickObject(ObjectType.Element);
             }
-            catch(Exception e)
+            catch (Exception ex)
             {
-                // TODO SK
+                Application.Logger.Error("Failed to pick object.", ex);
                 return null;
             }
 
-            if(elementReference == null)
+            if (elementReference == null)
             {
                 // TODO SK
                 return null;
