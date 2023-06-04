@@ -53,7 +53,7 @@ namespace BoundingBoxVisualizer.Logic.Commands
 
             if (elementReference == null)
             {
-                // TODO SK
+                Application.Logger.Error("Failed to pick object.");
                 return null;
             }
 

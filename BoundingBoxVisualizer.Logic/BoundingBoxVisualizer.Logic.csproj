@@ -54,6 +54,8 @@
     <Compile Include="Extensions\MeshExtensions.cs" />
     <Compile Include="Logic\ColorProvider.cs" />
     <Compile Include="Logic\Geometry\GeometryCreator.cs" />
+    <Compile Include="Logic\Interface\ILogger.cs" />
+    <Compile Include="Logic\Logger\ConsoleLogger.cs" />
     <Compile Include="Logic\Models\Line.cs" />
     <Compile Include="Logic\ServiceUtility.cs" />
     <Compile Include="Logic\Models\GeometryData.cs" />

@@ -24,6 +24,7 @@ namespace BoundingBoxVisualizer.Logic.Commands
                 {
                     new ServiceUtility().AddServer(uiDocument, geometry);
                 }
+                uiDocument.UpdateAllOpenViews();
             }
             catch (Exception ex)
             {

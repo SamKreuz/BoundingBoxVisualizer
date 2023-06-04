@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace BoundingBoxVisualizer.Logic.Logic
+namespace BoundingBoxVisualizer.Logic.Logic.Logger
 {
-    public class Logger : ILogger
+    public class ConsoleLogger : ILogger
     {
         public void Error(string message)
         {
@@ -17,12 +17,12 @@ namespace BoundingBoxVisualizer.Logic.Logic
 
         public void Information(string message)
         {
-            throw new System.NotImplementedException();
+            Debug.WriteLine($"Information: {message}");
         }
 
         public void Warning(string message)
         {
-            throw new System.NotImplementedException();
+            Debug.WriteLine($"Warning: {message}");
         }
     }
 }

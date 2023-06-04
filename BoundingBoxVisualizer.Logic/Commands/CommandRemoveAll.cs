@@ -16,6 +16,8 @@ namespace BoundingBoxVisualizer.Logic.Commands
             try
             {
                 successul = new ServiceUtility().RemoveAllServers(commandData.Application.ActiveUIDocument.Document);
+
+                commandData.Application.ActiveUIDocument.UpdateAllOpenViews();
             }
             catch(Exception ex)
             {

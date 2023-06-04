@@ -21,7 +21,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
             var geometryCreater = new GeometryCreator();
             Solid solid = geometryCreater.CreateGeometryFromBoundingBox(boundingBox);
 
-            var color = ColorProvider.GetRandomColor();
+            var color = ColorProvider.GetRandomColor(Application.Instance.Random);
 
             var painterGeometry = new Painter(uiDocument, solid, color);
 

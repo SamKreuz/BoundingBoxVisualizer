@@ -5,9 +5,8 @@ namespace BoundingBoxVisualizer.Logic.Logic
 {
     public static class ColorProvider
     {
-        public static ColorWithTransparency GetRandomColor()
+        public static ColorWithTransparency GetRandomColor(Random random)
         {
-            var random = new Random();
 
             uint red = (uint)random.Next(0, 255);
             uint green = (uint)random.Next(0, 255);
