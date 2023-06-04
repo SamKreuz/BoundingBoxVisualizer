@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+    <RevitAddIns>
+      <AddIn Type="Application">
+        <Name>Bounding Box Visualizer</Name>
+        <FullClassName>BoundingBoxVisualizer.Logic.Application</FullClassName>
+        <Assembly>ADD_PATH_TO_DLL</Assembly>
+        <AddInId>852B0EFE-EEB1-4B49-A79F-274D9BAEC219</AddInId>
+        <VendorId>Samuel Kreuz</VendorId>
+        <VendorDescription>Samuel Kreuz, www.samuelkreuz.com, https://github.com/SamKreuz</VendorDescription>
+      </AddIn>
+    <AddIn Type="Command">
+        <Name>Show Bounding Box</Name>
+        <FullClassName>BoundingBoxVisualizer.Logic.Commands.CommandShow</FullClassName>
+        <Text>Show Bounding Box</Text>
+        <Description>Make one selected bounding boxes of Autodesk Revit elements visible.</Description>
+        <VisibilityMode>AlwaysVisible</VisibilityMode>
+        <Assembly>ADD_PATH_TO_DLL</Assembly>
+        <AddInId>852B0EFE-EEB1-4B49-A79F-274D9BAEC211</AddInId>
+        <VendorId>Samuel Kreuz</VendorId>
+        <VendorDescription>Samuel Kreuz, www.samuelkreuz.com, https://github.com/SamKreuz</VendorDescription>
+      </AddIn>
+      <AddIn Type="Command">
+        <Name>Show All Bounding Boxes</Name>
+        <FullClassName>BoundingBoxVisualizer.Logic.Commands.CommandShowAll</FullClassName>
+        <Text>Show All Bounding Boxes</Text>
+        <Description>Make bounding boxes of all elments in the Autodesk Revit project visible.</Description>
+        <VisibilityMode>AlwaysVisible</VisibilityMode>
+        <Assembly>ADD_PATH_TO_DLL</Assembly>
+        <AddInId>852B0EFE-EEB1-4B49-A79F-274D9BAEC212</AddInId>
+        <VendorId>Samuel Kreuz</VendorId>
+        <VendorDescription>Samuel Kreuz, www.samuelkreuz.com, https://github.com/SamKreuz</VendorDescription>
+      </AddIn>
+      <AddIn Type="Command">
+        <Name>Hide All Bounding Boxes</Name>
+        <FullClassName>BoundingBoxVisualizer.Logic.Commands.CommandRemoveAll</FullClassName>
+        <Text>Hide All Bounding Boxes</Text>
+        <Description>Hide all visualizations of Bounding Boxes.</Description>
+        <VisibilityMode>AlwaysVisible</VisibilityMode>
+        <Assembly>ADD_PATH_TO_DLL</Assembly>
+        <AddInId>852B0EFE-EEB1-4B49-A79F-274D9BAEC213</AddInId>
+        <VendorId>Samuel Kreuz</VendorId>
+        <VendorDescription>Samuel Kreuz, www.samuelkreuz.com, https://github.com/SamKreuz</VendorDescription>
+      </AddIn>
+    </RevitAddIns>
+
