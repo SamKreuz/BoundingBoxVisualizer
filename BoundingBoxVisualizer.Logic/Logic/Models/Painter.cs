@@ -29,7 +29,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
         private ExternalServiceId id = ExternalServices.BuiltInExternalServices.DirectContext3DService;
 
         public bool CanExecute(View dBView) { return true; }
-        public bool UseInTransparentPass(View dBView) { return true; }  // TODO SK: Change
+        public bool UseInTransparentPass(View dBView) { return false; }
         public bool UsesHandles() { return false; }
         public string GetApplicationId() { return string.Empty; }
         public string GetDescription() { return "Draws geometry inside of a Revit model."; }
@@ -58,7 +58,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
                 }
                 catch (Exception ex)
                 {
-                    // TODO SK: Log
+                    Application.Logger.Error("Failed to get bounding box.", ex);
                 }
             }
 
@@ -75,7 +75,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
 
                 if (facesData == null)
                 {
-                    // TODO SK: Log
+                    Application.Logger.Error("Failed to get faces data.");
                     return;
                 }
 
@@ -103,13 +103,9 @@ namespace BoundingBoxVisualizer.Logic.Logic
                         edgesData.Start,
                         edgesData.PrimitiveCount);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    // TODO SK
-                    TaskDialog.Show("Exception", e.Message);
-
-                    // TODO SK: Compare to
-                    System.Windows.Forms.MessageBox.Show(e.ToString());
+                    Application.Logger.Error("Failed to render scene.", ex);
                 }
             }
         }

@@ -28,7 +28,7 @@ namespace BoundingBoxVisualizer.Logic.Commands
             }
             catch (Exception ex)
             {
-                // TODO SK: Log
+                Application.Logger.Error($"Failed to execute {nameof(CommandShowAll)}.", ex);
                 return Result.Failed;
             }
 

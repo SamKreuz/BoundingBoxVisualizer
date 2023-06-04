@@ -36,8 +36,6 @@ namespace BoundingBoxVisualizer.Logic.Logic
                 meshes = GetMeshes(solids);
             }
 
-            //List<VertexPosition> vertices = GetVertexPositions(meshes);
-
             faces.Meshes = meshes;
             faces.Start = 0;
             faces.PrimitiveType = PrimitiveType.TriangleList;
@@ -59,8 +57,6 @@ namespace BoundingBoxVisualizer.Logic.Logic
             edges.IndexCount = GetIndexLineShortInts(edges.PrimitiveCount);
             edges.IndexBuffer = CreateIndexBufferLine(edgePointGroups, edges.IndexCount);
         }
-
-
 
         public GeometryData GetFacesData()
         {
@@ -134,21 +130,6 @@ namespace BoundingBoxVisualizer.Logic.Logic
             edges.VertexCount = vertexCount;
         }
 
-        private List<VertexPosition> GetVertexPositions(List<Mesh> meshes)
-        {
-            List<VertexPosition> vertices = new List<VertexPosition>();
-
-            foreach (Mesh mesh in meshes)
-            {
-                foreach (var vertex in mesh.Vertices)
-                {
-                    vertices.Add(new VertexPosition(vertex));
-                }
-            }
-
-            return vertices;
-        }
-
         private int CountTriangles(List<Mesh> meshes)
         {
             int numberOfTriangles = 0;
@@ -196,7 +177,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
 
             foreach (Mesh mesh in meshes)
             {
-                int startIndex = numVerticesInMeshesBefore[meshNumber];  // TODO SK: Apply as foreach loop?
+                int startIndex = numVerticesInMeshesBefore[meshNumber];
                 for (int i = 0; i < mesh.NumTriangles; i++)
                 {
                     MeshTriangle mt = mesh.get_Triangle(i);
@@ -225,7 +206,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
 
             foreach (IList<XYZ> edge in edges)
             {
-                int startIndex = numVerticesInEdgesBefore[edgeNumber];  // TODO SK: Apply as foreach loop?
+                int startIndex = numVerticesInEdgesBefore[edgeNumber];
                 for (int i = 1; i < edge.Count; i++)
                 {
                     stream.AddLine(new IndexLine(startIndex + i - 1,
@@ -238,7 +219,6 @@ namespace BoundingBoxVisualizer.Logic.Logic
 
             return buffer;
         }
-
 
         private VertexBuffer CreateVertexBufferPositionColor(List<Mesh> meshes, int vertexCount, ColorWithTransparency color)
         {
@@ -259,7 +239,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
                 }
                 catch (Exception ex)
                 {
-                    // TODO SK
+                    Application.Logger.Error("Failed to add vertices to vertex stream.", ex);
                 }
 
                 numVerticesInMeshesBefore.Add(numVerticesInMeshesBefore.Last() + mesh.Vertices.Count);
@@ -291,7 +271,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
                     }
                     catch (Exception ex)
                     {
-                        // TODO SK
+                        Application.Logger.Error("Failed to add vertices to vertex stream.", ex);
                     }
                 }
 

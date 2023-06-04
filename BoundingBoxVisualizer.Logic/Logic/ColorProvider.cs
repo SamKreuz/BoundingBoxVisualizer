@@ -7,7 +7,6 @@ namespace BoundingBoxVisualizer.Logic.Logic
     {
         public static ColorWithTransparency GetRandomColor(Random random)
         {
-
             uint red = (uint)random.Next(0, 256);
             uint green = (uint)random.Next(0, 256);
             uint blue = (uint)random.Next(0, 256);

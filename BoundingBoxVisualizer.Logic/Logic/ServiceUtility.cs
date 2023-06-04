@@ -35,7 +35,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
 
             if (directContext3DService == null)
             {
-                // TODO SK: Log
+                Application.Logger.Error("Failed to get MultiServerService.");
                 return false;
             }
 
@@ -53,7 +53,7 @@ namespace BoundingBoxVisualizer.Logic.Logic
                     }
                     catch (Exception ex)
                     {
-                        // TODO SK: Log
+                        Application.Logger.Error($"Failed to remove server with id: {id}.", ex);
                     }
                 }
             }
@@ -79,9 +79,9 @@ namespace BoundingBoxVisualizer.Logic.Logic
                 msDirectContext3DService.SetActiveServers(serverIds);
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                //TODO SK: Log
+                Application.Logger.Error("Failed to add server.", ex);
                 return false;
             }
 
